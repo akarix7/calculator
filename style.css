@@ -1,0 +1,13 @@
+body{
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: "Sono", sans-serif;
+}
+
+#container{
+    margin: 0 auto;
+    background-color: #000;
+    height: 500px;
+    width: 300px;
+}
