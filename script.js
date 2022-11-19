@@ -1,3 +1,9 @@
+const container = document.querySelector("#container");
+const topBar = document.querySelector("#top-bar");
+const numbers = document.querySelector("#numbers");
+const operators = document.querySelector("#operators");
+window.addEventListener("load", startup, false);
+
 function add(...varargs){
     let total = 0;
     for(const args of varargs){
@@ -40,5 +46,33 @@ function operate(op, num1, num2){
     }
 }
 
-console.log(multiply(5,3, 10));
-operate("*", 5, 3);
+function createDiv(elements){
+    for(let elem of elements){
+        console.log(elem);
+        let div = document.createElement("button");
+        div.className = elem;
+        if(elements.length < 5 )
+            topBar.appendChild(div);
+        else if(elements.length > 5)
+            numbers.appendChild(div);
+        else
+            operators.appendChild(div);
+    }
+}
+
+function buildCalculator(){
+    let elem = ["clear", "negate", "percent"];
+    let nums = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero", "decimal"];
+    let ops = ["divide", "multiply", "add", "subtract", "equal"];
+    createDiv(elem);
+    createDiv(nums);
+    createDiv(ops);
+}
+
+function startup(){
+    buildCalculator();
+}
+
+//buildCalculator();
+// console.log(multiply(5,3, 10));
+// operate("*", 5, 3);
