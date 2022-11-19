@@ -2,6 +2,7 @@ const container = document.querySelector("#container");
 const topBar = document.querySelector("#top-bar");
 const numbers = document.querySelector("#numbers");
 const operators = document.querySelector("#operators");
+const display = document.querySelector("#display");
 window.addEventListener("load", startup, false);
 
 function add(...varargs){
@@ -90,7 +91,7 @@ function createCalFunc(){
 }
 
 function showDisplay(){
-
+    display.textContent = "9876";
 }
 
 function buildCalculator(){
@@ -107,6 +108,7 @@ function startup(){
     createNumbers();
     createOperators();
     createCalFunc();
+    showDisplay();
 }
 
 /*
