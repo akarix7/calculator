@@ -13,10 +13,21 @@ body{
     background-color: #e1e1e1;
     height: 600px;
     width: 375px;
+    display: flex;
+    align-items: end;
+
 }
 
-
 button{
-    width: 100px;
-    height: 50px;
+    width: 90px;
+    height: 75px;
+}
+
+#display{
+    height: 130px;
+}
+
+.right{
+    margin: 0 auto;
+    flex: 1;
 }
