@@ -1,7 +1,7 @@
 body{
     margin: 0;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh;
     font-family: "Sono", sans-serif;
 }
 #container{
@@ -14,17 +14,26 @@ body{
     height: 600px;
     width: 375px;
     display: flex;
-    align-items: end;
-
+    /*align-items: flex-end;*/
+    flex-wrap: wrap;
 }
 
 button{
     width: 90px;
     height: 75px;
+    font-size: 23px;
+    font-weight: 500;
 }
 
 #display{
     height: 130px;
+    background-color: #7b3939;
+    /*align-self: flex-start;*/
+    flex-basis: 100%;
+}
+
+.left{
+    width: 270px;
 }
 
 .right{

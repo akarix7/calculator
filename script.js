@@ -48,7 +48,6 @@ function operate(op, num1, num2){
 
 function createDiv(elements){
     for(let elem of elements){
-        console.log(elem);
         let div = document.createElement("button");
         div.className = elem;
         if(elements.length < 5 )
@@ -58,6 +57,40 @@ function createDiv(elements){
         else
             operators.appendChild(div);
     }
+}
+
+function createNumbers(){
+    let i = 1;
+    for(const num of numbers.children){
+        num.textContent = `${i++}`;
+
+        if(num.className === "decimal"){
+            num.textContent = ".";
+        }else if(num.className === "zero"){
+            num.textContent = "0";
+        }
+    }
+}
+
+function createOperators(){
+    let ops = ["÷", "×", "+", "-", "="];
+    let i = 0;
+    for(const op of operators.children){
+        op.textContent = `${ops[i++]}`;
+        console.log(op);
+    }
+}
+
+function createCalFunc(){
+    let func = ["AC", "+/-", "%"];
+    let i = 0;
+    for(const cal of topBar.children){
+        cal.textContent = `${func[i++]}`;
+    }
+}
+
+function showDisplay(){
+
 }
 
 function buildCalculator(){
@@ -71,8 +104,16 @@ function buildCalculator(){
 
 function startup(){
     buildCalculator();
+    createNumbers();
+    createOperators();
+    createCalFunc();
 }
 
+/*
+TO-DO
+- add "value" to buttons
+- add addeventlistener to buttons
+ */
 //buildCalculator();
 // console.log(multiply(5,3, 10));
 // operate("*", 5, 3);
