@@ -1,15 +1,27 @@
 const container = document.querySelector("#container");
-const topBar = document.querySelector("#top-bar");
+const calFunc = document.querySelector("#func");
 const numbers = document.querySelector("#numbers");
 const operators = document.querySelector("#operators");
 const display = document.querySelector("#display");
 window.addEventListener("load", startup, false);
+
+let storeValue ={
+    number: 0,
+    operation: ""
+}
+
+const getValue = () => storeValue;
+const setValue = (number, operator) => {
+    storeValue.number = number;
+    storeValue.operation = operator;
+}
 
 function add(...varargs){
     let total = 0;
     for(const args of varargs){
         total += parseInt(args);
     }
+    showDisplay(total);
     return total;
 }
 
@@ -18,30 +30,39 @@ function subtract(...varargs){
     for(let args of varargs){
         total -= parseInt(args);
     }
+    showDisplay(total);
     return total;
 }
 
 function multiply(...varargs){
+    console.log("HEY");
     let total = 1;
     for(let args of varargs){
         total *= parseInt(args);
     }
+    console.log(total);
+    showDisplay(total);
+
     return total;
 }
 
 function divide(num1, num2){
+    showDisplay(`${num1 / num2}`);
     return num1 / num2;
 }
 
 function operate(op, num1, num2){
+    let result = 0;
     switch (op){
-        case "+": add(num1, num2);
+        case "+": result = add(num1, num2);
         break;
-        case "-": subtract(num1, num2);
+        case "-": result = subtract(num1, num2);
         break;
-        case "*": multiply(num1, num2);
+        case "×": result = multiply(num1, num2);
         break;
-        case "/": divide(num1, num2);
+        case "÷": result = divide(num1, num2);
+        break;
+        case "=": showDisplay(result);
         break;
         default: console.log("error");
     }
@@ -52,7 +73,7 @@ function createDiv(elements){
         let div = document.createElement("button");
         div.className = elem;
         if(elements.length < 5 )
-            topBar.appendChild(div);
+            calFunc.appendChild(div);
         else if(elements.length > 5)
             numbers.appendChild(div);
         else
@@ -63,12 +84,17 @@ function createDiv(elements){
 function createNumbers(){
     let i = 1;
     for(const num of numbers.children){
+        num.value = i;
         num.textContent = `${i++}`;
-
+        num.addEventListener("click", () => {
+            showDisplay(num.value);
+        })
         if(num.className === "decimal"){
             num.textContent = ".";
+            num.value = ".";
         }else if(num.className === "zero"){
             num.textContent = "0";
+            num.value = 0;
         }
     }
 }
@@ -77,21 +103,31 @@ function createOperators(){
     let ops = ["÷", "×", "+", "-", "="];
     let i = 0;
     for(const op of operators.children){
+        op.value = ops[i];
         op.textContent = `${ops[i++]}`;
-        console.log(op);
+        op.addEventListener("click", () => {
+            setValue(getValue().number,op.value);
+            console.log(getValue());
+            if(op.value === "=")
+                operate(getValue().operation, getValue().number, 3);
+        })
     }
 }
 
 function createCalFunc(){
     let func = ["AC", "+/-", "%"];
+    let funcValue = ["clear", "negate", "percentage"];
     let i = 0;
-    for(const cal of topBar.children){
+    for(const cal of calFunc.children){
+        cal.value = funcValue[i];
         cal.textContent = `${func[i++]}`;
     }
 }
 
-function showDisplay(){
-    display.textContent = "9876";
+function showDisplay(num){
+    setValue(num);
+    console.log(getValue());
+    display.textContent = num;
 }
 
 function buildCalculator(){
@@ -108,13 +144,12 @@ function startup(){
     createNumbers();
     createOperators();
     createCalFunc();
-    showDisplay();
+    showDisplay(getValue().number);
 }
 
 /*
 TO-DO
-- add "value" to buttons
-- add addeventlistener to buttons
+- possibly add a number2 in the storeValue object
  */
 //buildCalculator();
 // console.log(multiply(5,3, 10));
