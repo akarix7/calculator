@@ -5,7 +5,7 @@ const operators = document.querySelector("#operators");
 const display = document.querySelector("#display");
 window.addEventListener("load", startup, false);
 
-let storeValue ={
+let storeValue = {
     numArr: []
     // number1: 0,
     // number2: 0
@@ -24,12 +24,8 @@ let buttonPressed = {
 const getValue = () => storeValue;
 const setValue = (...arr) => {
     for (let i of arr) {
-        storeValue.numArr.push(i);
+        storeValue.numArr.push(Number(i));
     }
-
-    // storeValue.number1 = num1;
-    // storeValue.number2 = num2;
-    console.log(getValue());
 }
 
 const getOperation = () => currentOperation;
@@ -54,21 +50,19 @@ function isCurrOpEmpty() {
 let getUserNumber = "";
 
 function affixNumber(num){
-    console.log(getButtonPressed());
-    if(!getButtonPressed().operateButton){
-        getUserNumber += num;
-        showDisplay(getUserNumber);
-    }else{
+
+    if(getButtonPressed().operateButton || getButtonPressed().evaluated){
         setValue(getUserNumber);
         getUserNumber = "";
-        getUserNumber += num;
-        showDisplay(getUserNumber);
         setButtonPressed(false, false);
     }
+    console.log(getButtonPressed());
+    getUserNumber += num;
+    showDisplay(getUserNumber);
 
 }
 
-function add(...varargs){
+function add(varargs){
     let total = 0;
     for(const args of varargs){
         total += parseInt(args);
@@ -76,17 +70,20 @@ function add(...varargs){
     return total;
 }
 
-function subtract(...varargs){
+function subtract(varargs){
     let total = 0;
-    for(let args of varargs){
-        total -= parseInt(args);
+    console.log(total);
+    for(const args of varargs){
+        console.log(args);
+        total = parseInt(total) - parseInt(args);
+        // total -= parseInt(args);
     }
     return total;
 }
 
-function multiply(...varargs){
+function multiply(varargs){
     let total = 1;
-    for(let args of varargs){
+    for(const args of varargs){
         total *= parseInt(args);
     }
 
@@ -97,15 +94,13 @@ function divide(num1, num2){
     return num1 / num2;
 }
 
-function operate(op, num1, num2){
-    let result = 0;
+function operate(op, ...num){
+    let numArr = num.join().split(",");
     switch (op){
-        case "+": return add(num1, num2);
-        case "-": return subtract(num1, num2);
-        case "×": return multiply(num1, num2);
-        case "÷": return divide(num1, num2);
-        case "=": showDisplay(result);
-        break;
+        case "+": return add(numArr);
+        case "-": return subtract(numArr);
+        case "×": return multiply(numArr);
+        case "÷": return divide(numArr);
         default: console.log("error");
     }
 }
@@ -130,8 +125,6 @@ function createNumbers(){
         num.textContent = `${i++}`;
         num.addEventListener("click", () => {
             affixNumber(num.value);
-            //setValue(num.value);
-            // showDisplay(temp);
         })
         if(num.className === "decimal"){
             num.textContent = ".";
@@ -151,9 +144,13 @@ function createOperators(){
         op.textContent = `${ops[i++]}`;
         op.addEventListener("click", () => {
             if(op.value === "=") {
-                console.log("should enter");
                 setButtonPressed(true, true);
-                //operate(getValue().operation, getValue().number1, getValue().number2);
+                if(getUserNumber !== "") {
+                    setValue(getUserNumber);
+                    getUserNumber = "";
+                }
+
+                showDisplay(operate(getOperation(), getValue().numArr));
             }
             else {
                 setOperation(op.value);
