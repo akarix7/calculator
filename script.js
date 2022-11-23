@@ -71,12 +71,9 @@ function add(varargs){
 }
 
 function subtract(varargs){
-    let total = 0;
-    console.log(total);
-    for(const args of varargs){
-        console.log(args);
-        total = parseInt(total) - parseInt(args);
-        // total -= parseInt(args);
+    let total = varargs[0];
+    for(const args of varargs.slice(1)){
+        total -= parseInt(args);
     }
     return total;
 }
