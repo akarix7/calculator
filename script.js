@@ -6,14 +6,66 @@ const display = document.querySelector("#display");
 window.addEventListener("load", startup, false);
 
 let storeValue ={
-    number: 0,
+    numArr: []
+    // number1: 0,
+    // number2: 0
+}
+
+let currentOperation = {
     operation: ""
 }
 
+let buttonPressed = {
+    evaluated: false,
+    operateButton: false
+}
+
+
 const getValue = () => storeValue;
-const setValue = (number, operator) => {
-    storeValue.number = number;
-    storeValue.operation = operator;
+const setValue = (...arr) => {
+    for (let i of arr) {
+        storeValue.numArr.push(i);
+    }
+
+    // storeValue.number1 = num1;
+    // storeValue.number2 = num2;
+    console.log(getValue());
+}
+
+const getOperation = () => currentOperation;
+const setOperation = (op) => {
+    currentOperation = op;
+}
+
+const getButtonPressed = () => buttonPressed;
+const setButtonPressed = (eval, op) => {
+    buttonPressed.evaluated = eval;
+    buttonPressed.operateButton = op;
+}
+
+function isValueEmpty(){
+    return getValue().numArr.length === 0;
+}
+
+function isCurrOpEmpty() {
+    return getOperation().operation === "";
+}
+
+let getUserNumber = "";
+
+function affixNumber(num){
+    console.log(getButtonPressed());
+    if(!getButtonPressed().operateButton){
+        getUserNumber += num;
+        showDisplay(getUserNumber);
+    }else{
+        setValue(getUserNumber);
+        getUserNumber = "";
+        getUserNumber += num;
+        showDisplay(getUserNumber);
+        setButtonPressed(false, false);
+    }
+
 }
 
 function add(...varargs){
@@ -21,7 +73,6 @@ function add(...varargs){
     for(const args of varargs){
         total += parseInt(args);
     }
-    showDisplay(total);
     return total;
 }
 
@@ -30,38 +81,29 @@ function subtract(...varargs){
     for(let args of varargs){
         total -= parseInt(args);
     }
-    showDisplay(total);
     return total;
 }
 
 function multiply(...varargs){
-    console.log("HEY");
     let total = 1;
     for(let args of varargs){
         total *= parseInt(args);
     }
-    console.log(total);
-    showDisplay(total);
 
     return total;
 }
 
 function divide(num1, num2){
-    showDisplay(`${num1 / num2}`);
     return num1 / num2;
 }
 
 function operate(op, num1, num2){
     let result = 0;
     switch (op){
-        case "+": result = add(num1, num2);
-        break;
-        case "-": result = subtract(num1, num2);
-        break;
-        case "×": result = multiply(num1, num2);
-        break;
-        case "÷": result = divide(num1, num2);
-        break;
+        case "+": return add(num1, num2);
+        case "-": return subtract(num1, num2);
+        case "×": return multiply(num1, num2);
+        case "÷": return divide(num1, num2);
         case "=": showDisplay(result);
         break;
         default: console.log("error");
@@ -87,7 +129,9 @@ function createNumbers(){
         num.value = i;
         num.textContent = `${i++}`;
         num.addEventListener("click", () => {
-            showDisplay(num.value);
+            affixNumber(num.value);
+            //setValue(num.value);
+            // showDisplay(temp);
         })
         if(num.className === "decimal"){
             num.textContent = ".";
@@ -106,10 +150,17 @@ function createOperators(){
         op.value = ops[i];
         op.textContent = `${ops[i++]}`;
         op.addEventListener("click", () => {
-            setValue(getValue().number,op.value);
-            console.log(getValue());
-            if(op.value === "=")
-                operate(getValue().operation, getValue().number, 3);
+            if(op.value === "=") {
+                console.log("should enter");
+                setButtonPressed(true, true);
+                //operate(getValue().operation, getValue().number1, getValue().number2);
+            }
+            else {
+                setOperation(op.value);
+                setButtonPressed(false, true);
+                console.log(storeValue);
+            }
+
         })
     }
 }
@@ -125,8 +176,6 @@ function createCalFunc(){
 }
 
 function showDisplay(num){
-    setValue(num);
-    console.log(getValue());
     display.textContent = num;
 }
 
@@ -144,12 +193,13 @@ function startup(){
     createNumbers();
     createOperators();
     createCalFunc();
-    showDisplay(getValue().number);
+    showDisplay(getValue().number1);
 }
 
 /*
 TO-DO
-- possibly add a number2 in the storeValue object
+- problem: need to append all numbers first then math operation then append all the numbers again
+12 x 45
  */
 //buildCalculator();
 // console.log(multiply(5,3, 10));
