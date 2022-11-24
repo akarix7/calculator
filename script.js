@@ -7,8 +7,6 @@ window.addEventListener("load", startup, false);
 
 let storeValue = {
     numArr: []
-    // number1: 0,
-    // number2: 0
 }
 
 let currentOperation = {
@@ -24,7 +22,14 @@ let buttonPressed = {
 const getValue = () => storeValue;
 const setValue = (...arr) => {
     for (let i of arr) {
-        storeValue.numArr.push(Number(i));
+        storeValue.numArr.push(i);
+    }
+}
+
+const clearValue = () => {
+    let length = getValue().numArr.length;
+    for(let i = 0; i < length; i++){
+        storeValue.numArr.pop();
     }
 }
 
@@ -65,30 +70,33 @@ function affixNumber(num){
 function add(varargs){
     let total = 0;
     for(const args of varargs){
-        total += parseInt(args);
+        total += parseFloat(args);
     }
-    return total;
+    return Math.round(total *1000) / 1000;
 }
 
 function subtract(varargs){
     let total = varargs[0];
     for(const args of varargs.slice(1)){
-        total -= parseInt(args);
+        total -= parseFloat(args);
     }
-    return total;
+    return Math.round(total*1000) /1000;
 }
 
 function multiply(varargs){
     let total = 1;
     for(const args of varargs){
-        total *= parseInt(args);
+        total *= parseFloat(args);
     }
-
-    return total;
+    return Math.round(total*1000) /1000;
 }
 
-function divide(num1, num2){
-    return num1 / num2;
+function divide(varargs){
+    let total = varargs[0];
+    for(const args of varargs.slice(1)){
+        total /= parseFloat(args);
+    }
+    return Math.round(total*1000) /1000;
 }
 
 function operate(op, ...num){
@@ -100,6 +108,13 @@ function operate(op, ...num){
         case "÷": return divide(numArr);
         default: console.log("error");
     }
+}
+
+function clear(){
+    showDisplay(0);
+    clearValue();
+    setOperation("");
+    setButtonPressed(false, false);
 }
 
 function createDiv(elements){
@@ -146,15 +161,12 @@ function createOperators(){
                     setValue(getUserNumber);
                     getUserNumber = "";
                 }
-
                 showDisplay(operate(getOperation(), getValue().numArr));
             }
             else {
                 setOperation(op.value);
                 setButtonPressed(false, true);
-                console.log(storeValue);
             }
-
         })
     }
 }
@@ -166,6 +178,14 @@ function createCalFunc(){
     for(const cal of calFunc.children){
         cal.value = funcValue[i];
         cal.textContent = `${func[i++]}`;
+        cal.addEventListener("click", () => {
+            if(cal.value === "clear")
+                clear();
+            else if(cal.value === "negate")
+                clear()
+            else
+                clear();
+        })
     }
 }
 
@@ -187,14 +207,5 @@ function startup(){
     createNumbers();
     createOperators();
     createCalFunc();
-    showDisplay(getValue().number1);
+    showDisplay(0);
 }
-
-/*
-TO-DO
-- problem: need to append all numbers first then math operation then append all the numbers again
-12 x 45
- */
-//buildCalculator();
-// console.log(multiply(5,3, 10));
-// operate("*", 5, 3);
