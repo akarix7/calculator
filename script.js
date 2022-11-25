@@ -121,17 +121,23 @@ function clear(){
 }
 
 function negate(){
-    setButtonPressed(false,getButtonPressed().operateButton,true);
-    console.log(getValue());
-    let test = lastValue();
-    console.log(test);
-    //1. get the array from getValue
-    //2. find the last value and change it maybe using a variable to save the value then append a - to the variable
-    //3. use pop? append the value to the array
+    if(getUserNumber !== "") {
+        setValue(getUserNumber);
+        getUserNumber = "";
+    }
+    let val = (Math.round(parseFloat(lastValue()) * 1000)/1000) * -1;
+    setValue(val);
+    showDisplay(val);
 }
 
 function percentage(){
-
+    if(getUserNumber !== "") {
+        setValue(getUserNumber);
+        getUserNumber = "";
+    }
+    let val = (Math.round(parseFloat(lastValue()) * 1000)/1000) /100;
+    setValue(val);
+    showDisplay(val);
 }
 
 function createDiv(elements){
