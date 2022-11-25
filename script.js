@@ -15,7 +15,8 @@ let currentOperation = {
 
 let buttonPressed = {
     evaluated: false,
-    operateButton: false
+    operateButton: false,
+    negateButton: false
 }
 
 
@@ -33,15 +34,20 @@ const clearValue = () => {
     }
 }
 
+const lastValue = () => {
+    return storeValue.numArr.pop();
+}
+
 const getOperation = () => currentOperation;
 const setOperation = (op) => {
     currentOperation = op;
 }
 
 const getButtonPressed = () => buttonPressed;
-const setButtonPressed = (eval, op) => {
+const setButtonPressed = (eval, op, neg) => {
     buttonPressed.evaluated = eval;
     buttonPressed.operateButton = op;
+    buttonPressed.negateButton = neg;
 }
 
 function isValueEmpty(){
@@ -55,16 +61,13 @@ function isCurrOpEmpty() {
 let getUserNumber = "";
 
 function affixNumber(num){
-
-    if(getButtonPressed().operateButton || getButtonPressed().evaluated){
-        setValue(getUserNumber);
-        getUserNumber = "";
-        setButtonPressed(false, false);
-    }
-    console.log(getButtonPressed());
+    // if(getButtonPressed().operateButton || getButtonPressed().evaluated){
+    //     setValue(getUserNumber);
+    //     getUserNumber = "";
+    //     setButtonPressed(false, false);
+    // }
     getUserNumber += num;
     showDisplay(getUserNumber);
-
 }
 
 function add(varargs){
@@ -117,6 +120,20 @@ function clear(){
     setButtonPressed(false, false);
 }
 
+function negate(){
+    setButtonPressed(false,getButtonPressed().operateButton,true);
+    console.log(getValue());
+    let test = lastValue();
+    console.log(test);
+    //1. get the array from getValue
+    //2. find the last value and change it maybe using a variable to save the value then append a - to the variable
+    //3. use pop? append the value to the array
+}
+
+function percentage(){
+
+}
+
 function createDiv(elements){
     for(let elem of elements){
         let div = document.createElement("button");
@@ -155,18 +172,16 @@ function createOperators(){
         op.value = ops[i];
         op.textContent = `${ops[i++]}`;
         op.addEventListener("click", () => {
+            if(getUserNumber !== "") {
+                setValue(getUserNumber);
+                getUserNumber = "";
+            }
             if(op.value === "=") {
                 setButtonPressed(true, true);
-                if(getUserNumber !== "") {
-                    setValue(getUserNumber);
-                    getUserNumber = "";
-                }
                 showDisplay(operate(getOperation(), getValue().numArr));
             }
-            else {
-                setOperation(op.value);
-                setButtonPressed(false, true);
-            }
+            setOperation(op.value);
+            setButtonPressed(false, true);
         })
     }
 }
@@ -182,9 +197,9 @@ function createCalFunc(){
             if(cal.value === "clear")
                 clear();
             else if(cal.value === "negate")
-                clear()
+                negate()
             else
-                clear();
+                percentage();
         })
     }
 }
