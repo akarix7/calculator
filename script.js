@@ -19,7 +19,6 @@ let buttonPressed = {
     negateButton: false
 }
 
-
 const getValue = () => storeValue;
 const setValue = (...arr) => {
     for (let i of arr) {
@@ -36,6 +35,10 @@ const clearValue = () => {
 
 const lastValue = () => {
     return storeValue.numArr.pop();
+}
+
+const pairOfNumbers = () => {
+    return storeValue.numArr.length === 2;
 }
 
 const getOperation = () => currentOperation;
@@ -61,11 +64,6 @@ function isCurrOpEmpty() {
 let getUserNumber = "";
 
 function affixNumber(num){
-    // if(getButtonPressed().operateButton || getButtonPressed().evaluated){
-    //     setValue(getUserNumber);
-    //     getUserNumber = "";
-    //     setButtonPressed(false, false);
-    // }
     getUserNumber += num;
     showDisplay(getUserNumber);
 }
@@ -114,8 +112,8 @@ function operate(op, ...num){
 }
 
 function clear(){
-    showDisplay(0);
     clearValue();
+    getUserNumber = "";
     setOperation("");
     setButtonPressed(false, false);
 }
@@ -138,6 +136,18 @@ function percentage(){
     let val = (Math.round(parseFloat(lastValue()) * 1000)/1000) /100;
     setValue(val);
     showDisplay(val);
+}
+
+function evaluate() {
+    setButtonPressed(true, true);
+    let result = operate(getOperation(), getValue().numArr);
+    let prevOperation = getOperation();
+    console.log("PREV OP" + prevOperation);
+
+    showDisplay(result);
+    clear();
+    setValue(result);
+    setOperation(prevOperation);
 }
 
 function createDiv(elements){
@@ -171,6 +181,10 @@ function createNumbers(){
     }
 }
 
+/*
+PROBLEM:
+PREVIOUS OPERATION GETS REPLACED
+ */
 function createOperators(){
     let ops = ["÷", "×", "+", "-", "="];
     let i = 0;
@@ -178,16 +192,23 @@ function createOperators(){
         op.value = ops[i];
         op.textContent = `${ops[i++]}`;
         op.addEventListener("click", () => {
+
             if(getUserNumber !== "") {
                 setValue(getUserNumber);
                 getUserNumber = "";
             }
             if(op.value === "=") {
-                setButtonPressed(true, true);
-                showDisplay(operate(getOperation(), getValue().numArr));
+                evaluate();
             }
             setOperation(op.value);
             setButtonPressed(false, true);
+
+            console.log("is there a pair of a numbers?" + pairOfNumbers());
+
+            if(pairOfNumbers()){
+                console.log("made it here");
+                evaluate();
+            }
         })
     }
 }
@@ -200,8 +221,10 @@ function createCalFunc(){
         cal.value = funcValue[i];
         cal.textContent = `${func[i++]}`;
         cal.addEventListener("click", () => {
-            if(cal.value === "clear")
+            if(cal.value === "clear") {
                 clear();
+                showDisplay(0);
+            }
             else if(cal.value === "negate")
                 negate()
             else
