@@ -197,18 +197,17 @@ function createOperators(){
                 setValue(getUserNumber);
                 getUserNumber = "";
             }
+
             if(op.value === "=") {
+                evaluate();
+            }
+
+            if(pairOfNumbers()){
                 evaluate();
             }
             setOperation(op.value);
             setButtonPressed(false, true);
 
-            console.log("is there a pair of a numbers?" + pairOfNumbers());
-
-            if(pairOfNumbers()){
-                console.log("made it here");
-                evaluate();
-            }
         })
     }
 }
