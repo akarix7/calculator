@@ -1,4 +1,3 @@
-const container = document.querySelector("#container");
 const calFunc = document.querySelector("#func");
 const numbers = document.querySelector("#numbers");
 const operators = document.querySelector("#operators");
@@ -49,14 +48,6 @@ const getButtonPressed = () => buttonPressed;
 const setButtonPressed = (eval, op) => {
     buttonPressed.evaluated = eval;
     buttonPressed.operateButton = op;
-}
-
-function isValueEmpty(){
-    return getValue().numArr.length === 0;
-}
-
-function isCurrOpEmpty() {
-    return getOperation().operation === "";
 }
 
 let getUserNumber = "";
