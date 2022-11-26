@@ -16,7 +16,6 @@ let currentOperation = {
 let buttonPressed = {
     evaluated: false,
     operateButton: false,
-    negateButton: false
 }
 
 const getValue = () => storeValue;
@@ -47,10 +46,9 @@ const setOperation = (op) => {
 }
 
 const getButtonPressed = () => buttonPressed;
-const setButtonPressed = (eval, op, neg) => {
+const setButtonPressed = (eval, op) => {
     buttonPressed.evaluated = eval;
     buttonPressed.operateButton = op;
-    buttonPressed.negateButton = neg;
 }
 
 function isValueEmpty(){
@@ -94,6 +92,10 @@ function multiply(varargs){
 
 function divide(varargs){
     let total = varargs[0];
+    if(varargs[1] === "0"){
+        clear();
+        return "Nice try!"
+    }
     for(const args of varargs.slice(1)){
         total /= parseFloat(args);
     }
@@ -142,12 +144,13 @@ function evaluate() {
     setButtonPressed(true, true);
     let result = operate(getOperation(), getValue().numArr);
     let prevOperation = getOperation();
-    console.log("PREV OP" + prevOperation);
 
     showDisplay(result);
     clear();
-    setValue(result);
-    setOperation(prevOperation);
+    if(!isNaN(result)){
+        setValue(result);
+        setOperation(prevOperation);
+    }
 }
 
 function createDiv(elements){
@@ -169,7 +172,11 @@ function createNumbers(){
         num.value = i;
         num.textContent = `${i++}`;
         num.addEventListener("click", () => {
-            affixNumber(num.value);
+            if(getUserNumber !== "0")
+                affixNumber(num.value);
+
+            if(num.value === ".")
+                num.disabled = true;
         })
         if(num.className === "decimal"){
             num.textContent = ".";
@@ -181,10 +188,6 @@ function createNumbers(){
     }
 }
 
-/*
-PROBLEM:
-PREVIOUS OPERATION GETS REPLACED
- */
 function createOperators(){
     let ops = ["÷", "×", "+", "-", "="];
     let i = 0;
@@ -196,17 +199,20 @@ function createOperators(){
             if(getUserNumber !== "") {
                 setValue(getUserNumber);
                 getUserNumber = "";
+                document.querySelector(".decimal").disabled = false;
             }
 
-            if(op.value === "=") {
+            if(op.value === "=" && pairOfNumbers()) {
                 evaluate();
             }
 
             if(pairOfNumbers()){
                 evaluate();
             }
-            setOperation(op.value);
-            setButtonPressed(false, true);
+            if(op.value !== "=") {
+                setOperation(op.value);
+                setButtonPressed(false, true);
+            }
 
         })
     }
